@@ -13,10 +13,11 @@ app.use(express.json());
 app.use(cookieParser());
 
 const authRouter = require("./src/routes/authRouter");
+const productRouter = require('./src/routes/productRouter');
 
 
 app.use("/",authRouter);
-
+app.use("/",productRouter);
 
 
 connectDb().then(()=>{
