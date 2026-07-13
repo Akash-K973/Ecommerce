@@ -9,7 +9,8 @@ authRouter.post("/auth/signup",async (req,res)=>{
         firstName,
         lastName,
         email,
-        password
+        password,
+        role:"user"
     });
   
     const logUser = await user.save();
@@ -31,6 +32,7 @@ authRouter.put("/auth/login",async (req,res)=>{
         if(!isValidPassword){
             res.send("PassWord is Incorrect");
         }
+
         else{
             const token = await user.getJWT();
             res.cookie("token",token,{expires:new Date(Date.now()+8*360000)})

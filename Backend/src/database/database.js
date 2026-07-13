@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
+const dotenv = require("dotenv").config();
 const connectDb = async ()=>{
-    await mongoose.connect("mongodb+srv://akash973:zGKu3fvnjsmGEXY@cluster0.o6gnbzk.mongodb.net/E-commerce");
+    await mongoose.connect(process.env.DATABASE);
 };
 
 module.exports = connectDb;

@@ -2,9 +2,14 @@ const express = require("express");
 const productRouter = express.Router();
 const jwt = require("jsonwebtoken");
 const Product = require("../models/product");
+const { userAuth } = require("../middleware/auth");
+const adminAuth = require("../middleware/adminAuth");
 
 
-productRouter.post("/add",async(req,res)=>{
+productRouter.post("/addProduct",userAuth,adminAuth,async(req,res)=>{
+    const user = req.user;
+    console.log(user.email);
+    if(user.email!="akashka973@gmail.com") {res.send("Invalid")}
     const {name,catogory,price,stock} = req.body;
     const product = new Product({
         name,
@@ -16,7 +21,7 @@ productRouter.post("/add",async(req,res)=>{
     res.send(saveProduct);
 })
 
-productRouter.get("/getAllProducts",async (req,res)=>{
+productRouter.get("/getAllProducts",userAuth,adminAuth,async (req,res)=>{
     try{
         const products = await Product.find();
         res.status(200).send(products);
@@ -26,10 +31,10 @@ productRouter.get("/getAllProducts",async (req,res)=>{
     }
 })
 
-productRouter.get("/getOneProduct",async(req,res)=>{
+productRouter.get("/getOneProduct",userAuth,adminAuth,async(req,res)=>{
     try{
-        const {name} = req.body;
-        const product = await Product.findOne({name});
+        const {_id} = req.body;
+        const product = await Product.findOne({_id});
         if(product){
             res.status(200).send(product);
         }
@@ -42,7 +47,7 @@ productRouter.get("/getOneProduct",async(req,res)=>{
     }
 })
 
-productRouter.delete("/deleteProduct",async(req,res)=>{
+productRouter.delete("/deleteProduct",userAuth,adminAuth,async(req,res)=>{
     try{
         const {_id}= req.body;
         const product = await Product.findOneAndDelete({_id});
@@ -59,7 +64,7 @@ productRouter.delete("/deleteProduct",async(req,res)=>{
     }
 })
 
-productRouter.put("/updateProduct",async(req,res)=>{
+productRouter.put("/updateProduct",userAuth,adminAuth,async(req,res)=>{
     try{
         const {_id,...updateData} = req.body;
         const product = await Product.findOne({_id});
@@ -77,9 +82,5 @@ productRouter.put("/updateProduct",async(req,res)=>{
 })
 
 
-
-productRouter.use("/",async(res,req)=>{
-    res.send("ProductRouter");
-})
 
 module.exports = productRouter;

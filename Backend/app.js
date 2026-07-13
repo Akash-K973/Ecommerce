@@ -14,10 +14,12 @@ app.use(cookieParser());
 
 const authRouter = require("./src/routes/authRouter");
 const productRouter = require('./src/routes/productRouter');
+const cartRouter = require('./src/routes/cartRouter');
 
 
 app.use("/",authRouter);
 app.use("/",productRouter);
+app.use("/",cartRouter);
 
 
 connectDb().then(()=>{

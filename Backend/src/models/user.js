@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const validator = require("validator")
 const jwt = require("jsonwebtoken")
+const dotenv = require("dotenv").config();
 
 const userSchema = new mongoose.Schema({
     firstName : {
@@ -22,6 +23,11 @@ const userSchema = new mongoose.Schema({
 
     password : {
         type : String,
+    },
+    role: {
+        type: String,
+        enum: ["user", "admin"],
+        default: "user"
     }
 },{
     timestamps:true,
@@ -30,7 +36,7 @@ const userSchema = new mongoose.Schema({
 
 userSchema.methods.getJWT = async function(){
     const user = this;
-    const token = await jwt.sign({_id:user._id},"Akash@973",{
+    const token = await jwt.sign({_id:user._id,role:user.role},process.env.TOKEN_KEY,{
         expiresIn:"7d"
     })
     return token;
